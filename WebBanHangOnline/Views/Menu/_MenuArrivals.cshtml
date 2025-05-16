@@ -1,0 +1,39 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.ProductCategory>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row mb-2">
+        <div class="col text-center">
+            <div class="section_title new_arrivals_title mb-2">
+                <h2 class="fw-bold text-uppercase text-success mb-1">Sản phẩm mới</h2>
+                <div class="border-bottom border-2 border-success w-25 mx-auto"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col text-center">
+            <div class="new_arrivals_sorting">
+                <ul class="arrivals_grid_sorting list-inline d-flex flex-wrap justify-content-center gap-2">
+                    <li class="grid_sorting_button list-inline-item btn btn-outline-success active is-checked" data-filter="*">
+                        <i class="fa fa-th-large me-1"></i> Tất cả
+                    </li>
+                    @foreach (var item in Model)
+                    {
+                        <li class="grid_sorting_button list-inline-item btn btn-outline-success" data-filter=".@item.Alias">
+                            <i class="fa fa-tag me-1"></i> @item.Title
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="product-grid" data-isotope='{ "itemSelector": ".product-item", "layoutMode": "fitRows" }'>
+                @Html.Action("Partial_ItemsByCateId", "Products")
+            </div>
+        </div>
+    </div>
+}

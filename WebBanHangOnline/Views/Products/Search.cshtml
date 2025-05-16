@@ -1,0 +1,85 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.Product>
+@{
+    ViewBag.Title = "Kết quả tìm kiếm";
+}
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
+
+<div class="container product_section_container">
+    <div class="row">
+        <div class="col product_section clearfix">
+
+            <div class="breadcrumbs d-flex flex-row align-items-center">
+                <ul>
+                    <li><a href="/">Trang chủ</a></li>
+                    <li class="active"><a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i>Kết quả tìm kiếm</a></li>
+                </ul>
+            </div>
+
+            <div class="main_content">
+                <h2 class="mb-4">Kết quả tìm kiếm cho: <strong>@ViewBag.Keyword</strong></h2>
+
+                <div class="products_iso">
+                    <div class="row">
+                        <div class="col">
+                            <div class="product-grid">
+                                @if (Model != null && Model.Any())
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        var strImage = "";
+                                        var img = item.ProductImage.FirstOrDefault(x => x.IsDefault);
+                                        if (img != null)
+                                        {
+                                            strImage = img.Image;
+                                        }
+                                        <div class="product-item @item.ProductCategory.Alias">
+                                            <div class="product discount product_filter">
+                                                <div class="product_image">
+                                                    <img src="@strImage" alt="@item.Title" />
+                                                </div>
+                                                <div class="favorite favorite_left"></div>
+                                                <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>Mới</span></div>
+                                                <div class="product_info">
+                                                    <h6 class="product_name">
+                                                        <a href="/chi-tiet/@item.Alias-p@(item.Id)">@item.Title</a>
+                                                    </h6>
+                                                    @if (item.PriceSale > 0)
+                                                    {
+                                                        <div class="product_price">
+                                                            @WebBanHangOnline.Common.Common.FormatNumber(item.PriceSale, 0)<span>@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</span>
+                                                        </div>
+                                                        <div style="display:none;" class="in_product_price">@item.PriceSale</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</div>
+                                                        <div style="display:none;" class="in_product_price">@item.Price</div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="red_button add_to_cart_button">
+                                                <a href="#" class="btnAddToCart" data-id="@item.Id">Thêm giỏ hàng</a>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="alert alert-warning mt-4" role="alert">
+                                        Không tìm thấy sản phẩm nào phù hợp với từ khóa "<strong>@ViewBag.Keyword</strong>"
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/assets/js/categories_custom.js"></script>
+}

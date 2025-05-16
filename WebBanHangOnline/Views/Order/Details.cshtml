@@ -1,0 +1,38 @@
+﻿@model WebBanHangOnline.Models.EF.Order
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng " + Model.Code;
+}
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
+
+<div class="container product_section_container pt-4">
+    <div class="row">
+        <h2>Chi tiết đơn hàng @Model.Code</h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var detail in Model.OrderDetails)
+                {
+                    <tr>
+                        <td>@detail.Product.Title</td>
+                        <td>@detail.Quantity</td>
+                        <td>@WebBanHangOnline.Common.Common.FormatNumber(detail.Price, 0)</td>
+                        <td>@WebBanHangOnline.Common.Common.FormatNumber(detail.Price * detail.Quantity, 0)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h3>Tổng tiền: @WebBanHangOnline.Common.Common.FormatNumber(Model.TotalAmount, 0)</h3>
+    </div>
+</div>
+

@@ -1,0 +1,83 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.BestSellingProductViewModel>
+@using WebBanHangOnline.Common
+
+@if (Model != null && Model.Any())
+{
+    <div class="best_sellers">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <div class="section_title new_arrivals_title">
+                        <h2>SẢN PHẨM BÁN CHẠY</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="product_slider_container" style="height: 500px;">
+                        <div class="owl-carousel owl-theme product_slider">
+                            @foreach (var item in Model)
+                            {
+                                var product = item.Product;
+                                var strImage = product.ProductImage.FirstOrDefault(x => x.IsDefault)?.Image ?? "/Content/images/no-image.jpg";
+
+                                <div class="owl-item product_slider_item">
+                                    <div class="product-item">
+                                        <div class="product discount">
+                                            <div class="product_image">
+                                                <img src="@strImage" alt="@product.Title" />
+                                            </div>
+
+                                            <div class="favorite favorite_left"></div>
+
+                                            @if (product.PriceSale > 0)
+                                            {
+                                                <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
+                                                    <span>Giảm</span>
+                                                </div>
+                                            }
+
+                                            <div class="product_info">
+                                                <h6 class="product_name">
+                                                    <a href="/chi-tiet/@product.Alias-p@(product.Id)">@product.Title</a>
+                                                </h6>
+
+                                                @if (product.PriceSale > 0)
+                                                {
+                                                    <div class="product_price">
+                                                        @Common.FormatNumber(product.PriceSale, 0)
+                                                        <span>@Common.FormatNumber(product.Price, 0)</span>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="product_price">@Common.FormatNumber(product.Price, 0)</div>
+                                                }
+
+                                                <div class="mt-1 text-success">
+                                                    <small>Đã bán: @item.TotalSold</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="red_button add_to_cart_button">
+                                                <a href="#" class="btnAddToCart" data-id="@product.Id">Thêm giỏ hàng</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Slider Navigation -->
+                        <div class="product_slider_nav_left product_slider_nav d-flex align-items-center justify-content-center flex-column">
+                            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                        </div>
+                        <div class="product_slider_nav_right product_slider_nav d-flex align-items-center justify-content-center flex-column">
+                            <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,147 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.Order>
+
+@{
+    ViewBag.Title = "Lịch sử đơn hàng";
+}
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
+
+<div class="container product_section_container pt-4">
+    <div class="row">
+        <h2 class="text-center mb-4">🛒 Lịch sử đơn hàng của bạn</h2>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info text-center">
+                Bạn chưa có đơn hàng nào!
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover shadow-sm">
+                    <thead class="thead-dark">
+                        <tr class="text-center">
+                            <th>Mã đơn hàng</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Tổng tiền</th>
+                            <th>Ngày tạo</th>
+                            <th>Trạng thái</th>
+                            <th>Chi tiết</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr class="align-middle text-center">
+                                <td><strong>@order.Code</strong></td>
+                                <td class="text-center">
+                                    <ul class="list-unstyled mb-0">
+                                        @foreach (var item in order.OrderDetails)
+                                        {
+                                            <li>@item.Product.Title</li>
+                                        }
+                                    </ul>
+                                </td>
+                                <td class="text-danger">@WebBanHangOnline.Common.Common.FormatNumber(order.TotalAmount, 0) ₫</td>
+                                <td>@order.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    @switch (order.Status)
+                                    {
+                                        case 1:
+                                            <span class="badge badge-warning px-2 py-1">Chờ xác nhận</span>
+                                            break;
+                                        case 2:
+                                            <span class="badge badge-info px-2 py-1">Đang giao</span>
+                                            break;
+                                        case 3:
+                                            <span class="badge badge-success px-2 py-1">Đã giao</span>
+                                            break;
+                                        case 4:
+                                            <span class="badge badge-danger px-2 py-1">Đã hủy</span>
+                                            break;
+                                        default:
+                                            <span class="badge badge-secondary px-2 py-1">Không xác định</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("Details", new { id = order.Id })" class="btn btn-sm btn-outline-primary">
+                                        <i class="fa fa-eye"></i> Chi tiết
+                                    </a>
+                                </td>
+                                <td>
+                                    @if (order.Status == 1 && order.IsPaid == false)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-danger btnCancelOrder" data-id="@order.Id">
+                                            <i class="fa fa-times"></i> Hủy đơn
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Không khả dụng</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal xác nhận hủy đơn -->
+<div class="modal fade" id="cancelOrderModal" tabindex="-1" role="dialog" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="cancelOrderModalLabel">Xác nhận hủy đơn hàng</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Đóng">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Bạn có chắc muốn hủy đơn hàng này không?</p>
+                <input type="hidden" id="cancelOrderId" value="0" />
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Không</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmCancel">Có, hủy ngay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('.btnCancelOrder').click(function () {
+                var orderId = $(this).data("id");
+                $('#cancelOrderId').val(orderId);
+                $('#cancelOrderModal').modal('show');
+            });
+
+            $('#btnConfirmCancel').click(function () {
+                var orderId = $('#cancelOrderId').val();
+
+                $.ajax({
+                    url: '@Url.Action("Cancel", "Order")',
+                    type: 'POST',
+                    data: { id: orderId },
+                    success: function (res) {
+                        if (res.success) {
+                            location.reload();
+                        } else {
+                            alert(res.message || "Hủy đơn thất bại.");
+                        }
+                    },
+                    error: function () {
+                        alert("Đã có lỗi xảy ra!");
+                    }
+                });
+            });
+        });
+    </script>
+}

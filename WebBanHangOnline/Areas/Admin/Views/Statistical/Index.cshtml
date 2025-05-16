@@ -1,0 +1,204 @@
+﻿@{
+    ViewBag.Title = "Thống kê";
+}
+@section naviheader {
+    <h1>Thống kê</h1>
+}
+
+<section class="content">
+    <!-- Bộ lọc -->
+    <div class="card card-outline card-primary">
+        <div class="card-header">
+            <h3 class="card-title"><i class="far fa-calendar-alt"></i> Bộ lọc thời gian</h3>
+        </div>
+        <div class="card-body">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <label>Từ ngày:</label>
+                    <input type="text" id="fromDate" class="form-control" placeholder="dd/mm/yyyy" />
+                </div>
+                <div class="col-md-3">
+                    <label>Đến ngày:</label>
+                    <input type="text" id="toDate" class="form-control" placeholder="dd/mm/yyyy" />
+                </div>
+                <div class="col-md-2">
+                    <label>Tháng:</label>
+                    <input type="month" id="month" class="form-control" />
+                </div>
+                <div class="col-md-2">
+                    <label>Năm:</label>
+                    <input type="number" id="year" class="form-control" min="2000" max="2100" />
+                </div>
+                <div class="col-md-2">
+                    <button id="btnSearch" class="btn btn-primary btn-block mt-4"><i class="fas fa-search"></i> Tìm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tổng doanh thu & lợi nhuận -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="card bg-gradient-success text-white">
+                <div class="card-body">
+                    <h5>Tổng doanh thu</h5>
+                    <h3 id="totalRevenue">0 đ</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-gradient-info text-white">
+                <div class="card-body">
+                    <h5>Tổng lợi nhuận</h5>
+                    <h3 id="totalProfit">0 đ</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biểu đồ -->
+    <div class="card card-outline card-secondary">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-chart-bar"></i> Biểu đồ doanh thu & lợi nhuận</h3>
+        </div>
+        <div class="card-body">
+            <canvas id="revenueProfitChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <!-- Bán chạy & bán ế -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-outline card-success">
+                <div class="card-header"><h3 class="card-title">🔥 Bán chạy</h3></div>
+                <div class="card-body table-responsive">
+                    <table class="table" id="bestSellingTable">
+                        <thead><tr><th>Sản phẩm</th><th>Số lượng</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-outline card-danger">
+                <div class="card-header"><h3 class="card-title">❄️ Bán ít</h3></div>
+                <div class="card-body table-responsive">
+                    <table class="table" id="slowSellingTable">
+                        <thead><tr><th>Sản phẩm</th><th>Số lượng</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var revenueProfitChart;
+
+        $(document).ready(function () {
+            loadStatistics();
+
+            $('#btnSearch').click(function () {
+                const fromDate = $('#fromDate').val();
+                const toDate = $('#toDate').val();
+                const month = $('#month').val();
+                const year = $('#year').val();
+
+                // Format lại tháng nếu có
+                let formattedMonth = '';
+                if (month) {
+                    const d = new Date(month);
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    const yyyy = d.getFullYear();
+                    formattedMonth = `${mm}/${yyyy}`;
+                }
+
+                loadStatistics(fromDate, toDate, formattedMonth, year);
+            });
+        });
+
+        function loadStatistics(fromDate = '', toDate = '', month = '', year = '') {
+            $.ajax({
+                url: '@Url.Action("GetStatistical", "Statistical")',
+                type: 'GET',
+                data: { fromDate, toDate, month, year },
+                success: function (res) {
+                    const labels = res.Data.map(x => {
+                        const d = new Date(parseInt(x.Date.substr(6)));
+                        return d.toLocaleDateString('vi-VN');
+                    });
+                    const revenueData = res.Data.map(x => x.DoanhThu);
+                    const profitData = res.Data.map(x => x.LoiNhuan);
+
+                    $('#totalRevenue').text(res.TotalRevenue.toLocaleString('vi-VN') + ' đ');
+                    $('#totalProfit').text(res.TotalProfit.toLocaleString('vi-VN') + ' đ');
+                    renderChart(labels, revenueData, profitData);
+                }
+            });
+
+            $.get('@Url.Action("GetBestSelling", "Statistical")', function (res) {
+                const tbody = $('#bestSellingTable tbody').empty();
+                res.Data.forEach(x => {
+                    tbody.append(`<tr><td>${x.ProductName}</td><td>${x.TotalSold}</td></tr>`);
+                });
+            });
+
+            $.get('@Url.Action("GetSlowSelling", "Statistical")', function (res) {
+                const tbody = $('#slowSellingTable tbody').empty();
+                res.Data.forEach(x => {
+                    tbody.append(`<tr><td>${x.ProductName}</td><td>${x.TotalSold}</td></tr>`);
+                });
+            });
+        }
+
+        function renderChart(labels, revenueData, profitData) {
+            const ctx = document.getElementById('revenueProfitChart').getContext('2d');
+            if (revenueProfitChart) revenueProfitChart.destroy();
+            revenueProfitChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Doanh thu',
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            data: revenueData
+                        },
+                        {
+                            label: 'Lợi nhuận',
+                            backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                            data: profitData
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function (ctx) {
+                                    return ctx.dataset.label + ': ' + ctx.raw.toLocaleString('vi-VN') + ' đ';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return value.toLocaleString('vi-VN') + ' đ';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+}
