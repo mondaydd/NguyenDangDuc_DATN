@@ -3,9 +3,7 @@
     ViewBag.Title = "Danh sách tài khoản";
 }
 
-
 @section naviheader{
-    <!-- Left navbar links -->
     <ul class="navbar-nav">
         <li class="nav-item">
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
@@ -18,14 +16,11 @@
         </li>
     </ul>
 }
-<!-- Main content -->
-<section class="content">
 
-    <!-- Default box -->
+<section class="content">
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Danh sách tài khoản</h3>
-
             <div class="card-tools">
                 <a href="/admin/account/create" class="btn btn-success">Thêm mới</a>
             </div>
@@ -38,7 +33,8 @@
                         <th>Tài khoản</th>
                         <th>Họ tên</th>
                         <th>Email</th>
-                        <th></th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,30 +43,101 @@
                         var i = 1;
                         foreach (var item in Model)
                         {
+                            var isLocked = item.LockoutEndDateUtc.HasValue && item.LockoutEndDateUtc > DateTime.UtcNow;
                             <tr>
                                 <td>@i</td>
                                 <td>@item.UserName</td>
                                 <td>@item.FullName</td>
                                 <td>@item.Email</td>
                                 <td>
-                                    <a href="/admin/account/edit/@item.UserName" class="btn btn-sm btn-primary">Sửa</a>
-                                    <a href="#" data-user="@item.UserName" class="btn btn-sm btn-danger btnDelete">Xóa</a>
+                                    @if (isLocked)
+                                    {
+                                        <span class="text-danger">Bị khóa</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-success">Hoạt động</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a href="/admin/account/edit/@item.Id" class="btn btn-sm btn-primary">Sửa</a>
+                                    <a href="#" data-user="@item.UserName" data-id="@item.Id" class="btn btn-sm btn-danger btnDelete">Xóa</a>
+
+                                    @if (isLocked)
+                                    {
+                                        <a href="#" data-id="@item.Id" class="btn btn-sm btn-warning btnUnlock">Mở khóa</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#" data-id="@item.Id" class="btn btn-sm btn-secondary btnBan">Khóa</a>
+                                    }
                                 </td>
                             </tr>
                             i++;
                         }
-
                     }
                 </tbody>
             </table>
         </div>
-        <!-- /.card-body -->
         <div class="card-footer">
-
         </div>
-        <!-- /.card-footer-->
     </div>
-    <!-- /.card -->
-
 </section>
-<!-- /.content -->
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            // Xóa tài khoản
+            $('.btnDelete').click(function () {
+                var user = $(this).data('user');
+                var id = $(this).data('id');
+
+                if (!confirm('Bạn có chắc chắn muốn xoá tài khoản "' + user + '" không?')) return;
+
+                $.ajax({
+                    url: '/admin/account/DeleteAccount',
+                    type: 'POST',
+                    data: { user: user, id: id },
+                    success: function (res) {
+                        if (res.Success) {
+                            location.reload();
+                        } else {
+                            alert('Xóa không thành công!');
+                        }
+                    },
+                    error: function () {
+                        alert('Đã có lỗi xảy ra.');
+                    }
+                });
+            });
+
+            // Khóa tài khoản
+            $('.btnBan').click(function () {
+                var id = $(this).data('id');
+                if (confirm("Bạn có chắc muốn KHÓA tài khoản này không?")) {
+                    $.post('/admin/account/BanAccount', { id: id }, function (res) {
+                        if (res.success) {
+                            location.reload();
+                        } else {
+                            alert("Khóa thất bại.");
+                        }
+                    });
+                }
+            });
+
+            // Mở khóa tài khoản
+            $('.btnUnlock').click(function () {
+                var id = $(this).data('id');
+                if (confirm("Bạn có chắc muốn MỞ KHÓA tài khoản này không?")) {
+                    $.post('/admin/account/UnlockAccount', { id: id }, function (res) {
+                        if (res.success) {
+                            location.reload();
+                        } else {
+                            alert("Mở khóa thất bại.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

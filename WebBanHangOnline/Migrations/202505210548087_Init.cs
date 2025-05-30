@@ -138,6 +138,9 @@
                         TotalAmount = c.Decimal(nullable: false, precision: 18, scale: 2),
                         Quantity = c.Int(nullable: false),
                         TypePayment = c.Int(nullable: false),
+                        Status = c.Int(nullable: false),
+                        IsPaid = c.Boolean(nullable: false),
+                        UserId = c.String(),
                         CreatedBy = c.String(),
                         CreatedDate = c.DateTime(nullable: false),
                         ModifiedDate = c.DateTime(nullable: false),
@@ -156,6 +159,7 @@
                         Description = c.String(),
                         Detail = c.String(),
                         Image = c.String(maxLength: 250),
+                        OriginalPrice = c.Decimal(nullable: false, precision: 18, scale: 2),
                         Price = c.Decimal(nullable: false, precision: 18, scale: 2),
                         PriceSale = c.Decimal(precision: 18, scale: 2),
                         Quantity = c.Int(nullable: false),
@@ -212,6 +216,24 @@
                 .Index(t => t.ProductId);
             
             CreateTable(
+                "dbo.tb_Review",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ProductId = c.Int(nullable: false),
+                        UserName = c.String(),
+                        FullName = c.String(),
+                        Email = c.String(),
+                        Content = c.String(),
+                        Rate = c.Int(nullable: false),
+                        CreatedDate = c.DateTime(nullable: false),
+                        Avatar = c.String(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Products", t => t.ProductId, cascadeDelete: true)
+                .Index(t => t.ProductId);
+            
+            CreateTable(
                 "dbo.AspNetRoles",
                 c => new
                     {
@@ -239,7 +261,7 @@
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Email = c.String(),
+                        Email = c.String(nullable: false),
                         CreatedDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
@@ -271,6 +293,7 @@
                         Id = c.String(nullable: false, maxLength: 128),
                         FullName = c.String(),
                         Phone = c.String(),
+                        Address = c.String(),
                         Email = c.String(maxLength: 256),
                         EmailConfirmed = c.Boolean(nullable: false),
                         PasswordHash = c.String(),
@@ -319,6 +342,7 @@
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
+            DropForeignKey("dbo.tb_Review", "ProductId", "dbo.Products");
             DropForeignKey("dbo.tb_ProductImage", "ProductId", "dbo.Products");
             DropForeignKey("dbo.Products", "ProductCategoryId", "dbo.tb_ProductCategory");
             DropForeignKey("dbo.tb_OrderDetail", "ProductId", "dbo.Products");
@@ -331,6 +355,7 @@
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
+            DropIndex("dbo.tb_Review", new[] { "ProductId" });
             DropIndex("dbo.tb_ProductImage", new[] { "ProductId" });
             DropIndex("dbo.Products", new[] { "ProductCategoryId" });
             DropIndex("dbo.tb_OrderDetail", new[] { "ProductId" });
@@ -345,6 +370,7 @@
             DropTable("dbo.tb_Subcribe");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetRoles");
+            DropTable("dbo.tb_Review");
             DropTable("dbo.tb_ProductImage");
             DropTable("dbo.tb_ProductCategory");
             DropTable("dbo.Products");

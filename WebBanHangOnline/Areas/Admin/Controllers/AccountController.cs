@@ -150,6 +150,159 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public ActionResult Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var user = UserManager.FindById(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new EditAccountViewModel
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Email = user.Email,
+                Phone = user.Phone,
+                Address = user.Address,
+                Role = UserManager.GetRoles(user.Id).FirstOrDefault()
+                //IsLock = user.LockoutEndDateUtc.HasValue && user.LockoutEndDateUtc.Value > DateTime.UtcNow
+            };
+            if (model.Role == "Customer")
+            {
+                ViewBag.Role = new SelectList(new List<string> { "Customer" }, model.Role);
+            }
+            else ViewBag.Role = new SelectList(db.Roles.ToList(), "Name", "Name", model.Role);
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(EditAccountViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await UserManager.FindByIdAsync(model.Id);
+                if (user == null)
+                {
+                    return HttpNotFound();
+                }
+
+                if (UserManager.GetRoles(user.Id).Contains("Customer"))
+                {
+                    ModelState.AddModelError("", "Không được sửa thông tin tài khoản khách hàng!");
+                    ViewBag.Role = new SelectList(db.Roles.ToList(), "Name", "Name", model.Role);
+                    return View(model);
+                }
+
+                user.UserName = model.UserName;
+                user.FullName = model.FullName;
+                user.Email = model.Email;
+                user.Phone = model.Phone;
+                user.Address = model.Address;
+                //if (model.IsLock)
+                //{
+                //    await UserManager.SetLockoutEndDateAsync(user.Id, DateTimeOffset.UtcNow.AddYears(100));
+                //    await UserManager.SetLockoutEnabledAsync(user.Id, true);
+                //}
+                //else
+                //{
+                //    await UserManager.SetLockoutEndDateAsync(user.Id, DateTimeOffset.UtcNow);
+                //    await UserManager.SetLockoutEnabledAsync(user.Id, false);
+                //}
+
+                var userRoles = await UserManager.GetRolesAsync(user.Id);
+                var selectedRole = model.Role;
+
+                if (!userRoles.Contains(selectedRole))
+                {
+                    await UserManager.RemoveFromRolesAsync(user.Id, userRoles.ToArray());
+                    await UserManager.AddToRoleAsync(user.Id, selectedRole);
+                }
+
+                var result = await UserManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                AddErrors(result);
+            }
+            ViewBag.Role = new SelectList(db.Roles.ToList(), "Name", "Name", model.Role);
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> BanAccount(string id)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            if (user == null) return Json(new { success = false });
+
+            // Bật khóa tài khoản (bắt buộc phải có bước này)
+            var enableResult = await UserManager.SetLockoutEnabledAsync(user.Id, true);
+            if (!enableResult.Succeeded)
+                return Json(new { success = false });
+
+            // Đặt ngày khóa tài khoản rất xa trong tương lai
+            var lockoutEndDate = DateTimeOffset.UtcNow.AddYears(100);
+            var result = await UserManager.SetLockoutEndDateAsync(user.Id, lockoutEndDate);
+            if (result.Succeeded)
+            {
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false });
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> UnlockAccount(string id)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+            if (user == null) return Json(new { success = false });
+
+            // Đặt ngày khóa tài khoản là null (hoặc ngày quá khứ) để mở khóa
+            var result = await UserManager.SetLockoutEndDateAsync(user.Id, DateTimeOffset.UtcNow);
+            if (result.Succeeded)
+            {
+                // Tắt khóa tài khoản
+                await UserManager.SetLockoutEnabledAsync(user.Id, false);
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteAccount(string user, string id)
+        {
+            var code = new { Success = false };//mặc định không xóa thành công.
+            var item = UserManager.FindByName(user);
+            if (item != null)
+            {
+                var rolesForUser = UserManager.GetRoles(id);
+                if (rolesForUser != null)
+                {
+                    foreach (var role in rolesForUser)
+                    {
+                        //roles.Add(role);
+                        await UserManager.RemoveFromRoleAsync(id, role);
+                    }
+
+                }
+
+                var res = await UserManager.DeleteAsync(item);
+                code = new { Success = res.Succeeded };
+            }
+            return Json(code);
+        }
+
         private IAuthenticationManager AuthenticationManager
         {
             get

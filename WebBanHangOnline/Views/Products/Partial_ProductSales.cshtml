@@ -14,7 +14,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <div class="product_slider_container" style="height: 500px;">
+                    <div class="product_slider_container">
                         <div class="owl-carousel owl-theme product_slider">
                             @foreach (var item in Model)
                             {
@@ -23,19 +23,18 @@
 
                                 <div class="owl-item product_slider_item">
                                     <div class="product-item">
-                                        <div class="product discount">
-                                            <div class="product_image">
+                                        <div class="product discount" style="height: 350px;">
+                                            <div class="product_image" style="height: 230px;">
                                                 <img src="@strImage" alt="@product.Title" />
                                             </div>
 
                                             <div class="favorite favorite_left"></div>
 
-                                            @if (product.PriceSale > 0)
-                                            {
-                                                <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
-                                                    <span>Giảm</span>
-                                                </div>
-                                            }
+
+                                            <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
+                                                <span style="font-size:6px; padding:0 6px;">Bán chạy</span>
+                                            </div>
+
 
                                             <div class="product_info">
                                                 <h6 class="product_name">
@@ -59,11 +58,13 @@
                                                 </div>
                                             </div>
 
-                                            <div class="red_button add_to_cart_button">
-                                                <a href="#" class="btnAddToCart" data-id="@product.Id">Thêm giỏ hàng</a>
-                                            </div>
+
+                                        </div>
+                                        <div class="red_button add_to_cart_button">
+                                            <a href="#" class="btnAddToCart" data-id="@product.Id">Thêm giỏ hàng</a>
                                         </div>
                                     </div>
+
                                 </div>
                             }
                         </div>

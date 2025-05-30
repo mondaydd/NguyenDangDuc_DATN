@@ -1,7 +1,28 @@
 ﻿@model IEnumerable<WebBanHangOnline.Models.EF.Category>
+
+<style>
+    .navbar_menu.big-menu {
+        font-size: 25px; /* Cỡ chữ lớn hơn */
+        font-weight: bold; /* (Tùy chọn) Làm đậm chữ */
+    }
+
+        .navbar_menu.big-menu li {
+            margin-right: 20px; /* (Tùy chọn) Giãn cách các mục */
+        }
+
+            .navbar_menu.big-menu li a {
+                text-decoration: none;
+                color: #000; /* Màu chữ */
+            }
+
+                .navbar_menu.big-menu li a:hover {
+                    color: #007bff; /* Màu khi hover */
+                }
+</style>
+
 @if (Model != null && Model.Any())
 {
-    <ul class="navbar_menu">
+    <ul class="navbar_menu big-menu">
         @foreach (var item in Model)
         {
             if (item.Alias.Equals("trang-chu"))
@@ -10,11 +31,5 @@
             }
             <li><a href="/@item.Alias">@item.Title</a></li>
         }
-
-        @*<li><a href="#">shop</a></li>
-        <li><a href="#">promotion</a></li>
-        <li><a href="#">pages</a></li>
-        <li><a href="#">blog</a></li>
-        <li><a href="contact.html">contact</a></li>*@
     </ul>
 }

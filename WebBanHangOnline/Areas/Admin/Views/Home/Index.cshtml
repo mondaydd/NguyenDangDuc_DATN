@@ -1,52 +1,94 @@
-﻿
-@{
-    ViewBag.Title = "Trang chủ admin";
+﻿@{
+    ViewBag.Title = "Trang quản trị - 116 CookStore";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-<!-- Content Header (Page header) -->
+
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Blank Page</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Blank Page</li>
-                </ol>
+                <h1>Trang quản trị 116 CookStore</h1>
             </div>
         </div>
-    </div><!-- /.container-fluid -->
-</section>
-
-<!-- Main content -->
-<section class="content">
-
-    <!-- Default box -->
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Title</h3>
-
-            <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                    <i class="fas fa-minus"></i>
-                </button>
-                <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-        <div class="card-body">
-            Start creating your amazing application!
-        </div>
-        <!-- /.card-body -->
-        <div class="card-footer">
-            Footer
-        </div>
-        <!-- /.card-footer-->
     </div>
-    <!-- /.card -->
-
 </section>
-<!-- /.content -->
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <!-- Tổng tài khoản -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>@ViewBag.TotalCustomers</h3>
+                        <p>Tài khoản đã đăng ký</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <a href="/admin/account" class="small-box-footer">Xem chi tiết <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Tổng doanh thu -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>@String.Format("{0:N0}đ", ViewBag.TotalRevenue)</h3>
+                        <p>Tổng doanh thu</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <a href="/admin/statistical" class="small-box-footer">Chi tiết doanh thu <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Sản phẩm đã bán -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>@ViewBag.TotalProductsSold</h3>
+                        <p>Sản phẩm đã bán</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <a href="/admin/statistical" class="small-box-footer">Xem sản phẩm <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Đơn hàng mới -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>@ViewBag.NewOrders</h3>
+                        <p>Đơn hàng</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <a href="/admin/order" class="small-box-footer">Xem đơn hàng <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title">Giới thiệu</h3>
+            </div>
+            <div class="card-body">
+                <p>Chào mừng bạn đến với hệ thống quản trị của <strong>116 CookStore</strong>. Tại đây, bạn có thể:</p>
+                <ul>
+                    <li>Quản lý sản phẩm, danh mục và kho hàng</li>
+                    <li>Xem và xử lý đơn hàng</li>
+                    <li>Theo dõi thống kê doanh thu và hiệu suất</li>
+                    <li>Quản lý người dùng</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                Chúc bạn một ngày làm việc hiệu quả!
+            </div>
+        </div>
+    </div>
+</section>

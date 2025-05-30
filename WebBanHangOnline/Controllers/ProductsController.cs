@@ -71,7 +71,7 @@ namespace WebBanHangOnline.Controllers
 
         public ActionResult Partial_ItemsByCateId()
         {
-            DateTime tenDaysAgo = DateTime.Now.AddDays(-10);
+            DateTime tenDaysAgo = DateTime.Now.AddDays(-20);
             var items = db.Products
                           .Where(x => x.IsHome && x.IsActive && x.CreatedDate >= tenDaysAgo)
                           .OrderByDescending(x => x.CreatedDate)  // ưu tiên sản phẩm mới nhất lên đầu

@@ -219,29 +219,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202504300729232_Init.cs" />
-    <Compile Include="Migrations\202504300729232_Init.Designer.cs">
-      <DependentUpon>202504300729232_Init.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202505020701226_UpdateSub.cs" />
-    <Compile Include="Migrations\202505020701226_UpdateSub.Designer.cs">
-      <DependentUpon>202505020701226_UpdateSub.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202505021405086_UpdateOriginalPrice.cs" />
-    <Compile Include="Migrations\202505021405086_UpdateOriginalPrice.Designer.cs">
-      <DependentUpon>202505021405086_UpdateOriginalPrice.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202505041440499_UpdateOrder.cs" />
-    <Compile Include="Migrations\202505041440499_UpdateOrder.Designer.cs">
-      <DependentUpon>202505041440499_UpdateOrder.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202505131404208_CreateReview.cs" />
-    <Compile Include="Migrations\202505131404208_CreateReview.Designer.cs">
-      <DependentUpon>202505131404208_CreateReview.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202505141648269_AddressUser.cs" />
-    <Compile Include="Migrations\202505141648269_AddressUser.Designer.cs">
-      <DependentUpon>202505141648269_AddressUser.cs</DependentUpon>
+    <Compile Include="Migrations\202505210548087_Init.cs" />
+    <Compile Include="Migrations\202505210548087_Init.Designer.cs">
+      <DependentUpon>202505210548087_Init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -3385,6 +3365,7 @@
     <Content Include="Areas\Admin\Views\SettingSystem\Partial_Setting.cshtml" />
     <Content Include="Areas\Admin\Views\Statistical\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Statistical\PrintInvoices.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\Edit.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -3498,23 +3479,8 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202504300729232_Init.resx">
-      <DependentUpon>202504300729232_Init.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202505020701226_UpdateSub.resx">
-      <DependentUpon>202505020701226_UpdateSub.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202505021405086_UpdateOriginalPrice.resx">
-      <DependentUpon>202505021405086_UpdateOriginalPrice.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202505041440499_UpdateOrder.resx">
-      <DependentUpon>202505041440499_UpdateOrder.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202505131404208_CreateReview.resx">
-      <DependentUpon>202505131404208_CreateReview.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202505141648269_AddressUser.resx">
-      <DependentUpon>202505141648269_AddressUser.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202505210548087_Init.resx">
+      <DependentUpon>202505210548087_Init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

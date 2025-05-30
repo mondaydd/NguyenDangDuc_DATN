@@ -1,9 +1,88 @@
 ﻿@{
-    ViewBag.Title = "About";
+    ViewBag.Title = "Giới thiệu";
+    ViewBag.Message = "Chào mừng bạn đến với 116CookStore!";
 }
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_styles.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/categories_responsive.css">
+<style type="text/css">
+    .about-section {
+        background-color: #fffdf8;
+        padding: 40px 30px;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+        max-width: 900px;
+        margin: 40px auto;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-    <p>Use this area to provide additional information.</p>
-</main>
+        .about-section h2 {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 3px solid #ff7043;
+            display: inline-block;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .about-section h3 {
+            font-size: 22px;
+            font-weight: 500;
+            color: #ff7043;
+            margin-bottom: 25px;
+        }
+
+        .about-section p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+            .about-section p strong {
+                color: #333;
+            }
+
+    /* Media query phải đặt cuối cùng và đúng cú pháp */
+    @@media screen and (max-width: 768px) {
+        .about-section {
+            padding: 20px 15px;
+        }
+
+            .about-section h2 {
+                font-size: 26px;
+            }
+
+            .about-section h3 {
+                font-size: 18px;
+            }
+    }
+</style>
+
+<div class="container product_section_container">
+    <div class="about-section">
+        <h2 id="title">@ViewBag.Title</h2>
+        <h3>@ViewBag.Message</h3>
+
+        <p>
+            116CookStore là cửa hàng chuyên cung cấp các sản phẩm và dụng cụ nhà bếp chất lượng cao,
+            từ đồ dùng nấu ăn, dụng cụ pha chế, đến các thiết bị tiện ích cho căn bếp hiện đại.
+            Với sứ mệnh mang đến sự tiện nghi và cảm hứng cho mỗi gian bếp Việt,
+            chúng tôi luôn lựa chọn những sản phẩm tốt nhất với mức giá hợp lý.
+        </p>
+
+        <p>
+            Đội ngũ của 116CookStore không ngừng nỗ lực để cập nhật các mẫu mã mới,
+            xu hướng thiết kế hiện đại và công nghệ tiên tiến, giúp khách hàng có trải nghiệm nấu nướng tuyệt vời hơn mỗi ngày.
+        </p>
+
+        <p>
+            Hãy đến với 116CookStore để khám phá thế giới đồ dùng nhà bếp phong phú,
+            nhận tư vấn nhiệt tình và tìm thấy những món đồ phù hợp cho căn bếp thân yêu của bạn!
+        </p>
+
+        <p><strong>Địa chỉ:</strong> 367 Xuân Phương, Nam Từ Liêm, Hà Nội</p>
+        <p><strong>Hotline:</strong> 0817280231</p>
+        <p><strong>Email:</strong> dangduc116@gmail.com</p>
+    </div>
+</div>

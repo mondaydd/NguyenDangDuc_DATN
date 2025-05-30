@@ -1316,7 +1316,7 @@ section
 .product_slider_container
 {
 	width: 100%;
-	height: 340px;
+	height: 390px;
 	margin-top: 73px;
 }
 .product_slider_container::after
@@ -1337,7 +1337,7 @@ section
 }
 .product_slider_item .product-item
 {
-	height: 340px;
+	height: 390px;
 }
 .product_slider_item
 {
